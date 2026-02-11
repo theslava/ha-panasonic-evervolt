@@ -11,3 +11,11 @@ My electrical configuration is as follows:
 3. Panasonic EVHB-I7 Inverter which appears to be strikingly similar to the Solax A1 Hybrid G2. Connected to ESS1 port of the Smartbox.
 4. Panasonic SmartBox (Also Solax?), everything feeds in/from here.
 5. ~20kwh battery capacity (4x 5kwh battery modules)
+6. Using the http rest api, the inverter is type 19
+
+Attached are fragments of my current configuration files.
+How my config is set up:
+1. Rest integration to fetch data (configuration.yaml)
+2. Binary sensor to make sure data was gathered and to store data as attributes.
+3. All other sensors read from the binary sensor attributes needed data to set proper state
+    - Sensors use the int_ops jinja2 macro library for some data that is not a direct value

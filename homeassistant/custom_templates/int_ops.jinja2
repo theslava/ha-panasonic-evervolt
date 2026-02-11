@@ -1,0 +1,20 @@
+{# Unsigned 8-bit integer (0–255) #}
+{% macro uint8(x) -%}
+{{ x % 256 }}
+{%- endmacro %}
+
+{# Signed 16-bit integer (two's complement) #}
+{% macro int16(x) -%}
+{{ x - 65536 if x > 32767 else x }}
+{%- endmacro %}
+
+{# Unsigned 32-bit integer (two uint16 words, little-endian) #}
+{% macro uint32(lo, hi) -%}
+{{ hi * 65536 + lo }}
+{%- endmacro %}
+
+{# Signed 32-bit integer (two's complement, little-endian) #}
+{% macro int32(lo, hi) -%}
+{% set v = hi * 65536 + lo %}
+{{ v - 4294967296 if v > 2147483647 else v }}
+{%- endmacro %}

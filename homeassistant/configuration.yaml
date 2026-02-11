@@ -1,0 +1,47 @@
+### Solax REST command online sensor ###
+rest:
+  - authentication: digest
+    scan_interval: 10
+    resource: !secret evervolt_address
+    payload_template: !secret evervolt_payload
+    method: POST
+    headers: 
+      Content-Type: "application/x-www-form-urlencoded"
+    sensor:
+      - name: "evervolt"
+        json_attributes:
+        - sn
+        - ver
+        - type
+        - Data
+        - Information
+        value_template: "{{ now() }}"
+
+sensor:
+  - platform: integration
+    source: sensor.battery_charge_power
+    name: Battery Charge Energy
+    unit_prefix: k
+    unique_id: battery_charge_energy
+    method: trapezoidal
+    round: 3
+
+  - platform: integration
+    source: sensor.battery_discharge_power
+    name: Battery Discharge Energy
+    unit_prefix: k
+    unique_id: battery_discharge_energy
+    method: trapezoidal
+    round: 3
+
+homeassistant:
+  customize:
+    sensor.battery_charge_energy:
+      device_class: energy
+      state_class: total_increasing
+      unit_of_measurement: kWh
+
+    sensor.battery_discharge_energy:
+      device_class: energy
+      state_class: total_increasing
+      unit_of_measurement: kWh

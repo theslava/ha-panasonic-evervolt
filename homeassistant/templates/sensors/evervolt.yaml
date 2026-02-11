@@ -1,0 +1,247 @@
+- name: Grid Voltage
+  device_class: voltage
+  unit_of_measurement: "V"
+  state_class: measurement
+  state: > 
+    {% if is_state('binary_sensor.evervolt_ok', 'on') %}
+      {{ state_attr('sensor.evervolt', 'Data')[4] | float / 10 }}
+    {% endif %}
+
+- name: Grid Current
+  device_class: current
+  unit_of_measurement: "A"
+  state_class: measurement
+  state: > 
+    {% if is_state('binary_sensor.evervolt_ok', 'on') %}
+      {% set a = state_attr('sensor.evervolt', 'Data')[5] | float %}
+      {% from 'int_ops.jinja' import int16 %}
+      {{ int16(a) | float / 10 }}
+    {% endif %}
+
+- name: Battery Net Power
+  device_class: power
+  unit_of_measurement: "W"
+  state_class: measurement
+  state: > 
+    {% if is_state('binary_sensor.evervolt_ok', 'on') %}
+      {% set a = state_attr('sensor.evervolt', 'Data')[6] | float %}
+      {% from 'int_ops.jinja' import int16 %}
+      {{ int16(a) | float }}
+    {% endif %}
+
+- name: Battery Charge Power
+  device_class: power
+  unit_of_measurement: "W"
+  state_class: measurement
+  state: > 
+    {% if is_state('binary_sensor.evervolt_ok', 'on') %}
+      {% set a = state_attr('sensor.evervolt', 'Data')[6] | float %}
+      {% from 'int_ops.jinja' import int16 %}
+      {% set c = int16(a) | float %}
+      {{ c | abs if c < 0 else 0 }}
+    {% endif %}
+
+- name: Battery Discharge Power
+  device_class: power
+  unit_of_measurement: "W"
+  state_class: measurement
+  state: > 
+    {% if is_state('binary_sensor.evervolt_ok', 'on') %}
+      {% set a = state_attr('sensor.evervolt', 'Data')[6] | float %}
+      {% from 'int_ops.jinja' import int16 %}
+      {% set c = int16(a) | float %}
+      {{ c if c > 0 else 0 }}
+    {% endif %}
+
+- name: Grid Frequency
+  device_class: frequency
+  unit_of_measurement: "Hz"
+  state_class: measurement
+  state: > 
+    {% if is_state('binary_sensor.evervolt_ok', 'on') %}
+      {{ state_attr('sensor.evervolt', 'Data')[7] | float / 100 }}
+    {% endif %}
+
+- name: Net Power
+  device_class: power
+  unit_of_measurement: "W"
+  state_class: measurement
+  state: > 
+    {% if is_state('binary_sensor.evervolt_ok', 'on') %}
+      {% set a = state_attr('sensor.evervolt', 'Data')[28] | float %}
+      {% set b = state_attr('sensor.evervolt', 'Data')[29] | float %}
+      {% from 'int_ops.jinja' import int32 %}
+      {{ int32(a,b) | float }}
+    {% endif %}
+
+- name: Net Power Inverted
+  device_class: power
+  unit_of_measurement: "W"
+  state_class: measurement
+  state: > 
+    {% if is_state('binary_sensor.evervolt_ok', 'on') %}
+      {% set a = state_attr('sensor.evervolt', 'Data')[28] | float %}
+      {% set b = state_attr('sensor.evervolt', 'Data')[29] | float %}
+      {% from 'int_ops.jinja' import int32 %}
+      {{ int32(a,b) | float * -1 }}
+    {% endif %}
+
+- name: Net Power Import
+  device_class: power
+  unit_of_measurement: "W"
+  state_class: measurement
+  state: > 
+    {% if is_state('binary_sensor.evervolt_ok', 'on') %}
+      {% set a = state_attr('sensor.evervolt', 'Data')[28] | float %}
+      {% set b = state_attr('sensor.evervolt', 'Data')[29] | float %}
+      {% from 'int_ops.jinja' import int32 %}
+      {% set c = int32(a,b) | float %}
+      {{ c | abs if c < 0 else 0 }}
+    {% endif %}
+
+- name: Net Power Export
+  device_class: power
+  unit_of_measurement: "W"
+  state_class: measurement
+  state: > 
+    {% if is_state('binary_sensor.evervolt_ok', 'on') %}
+      {% set a = state_attr('sensor.evervolt', 'Data')[28] | float %}
+      {% set b = state_attr('sensor.evervolt', 'Data')[29] | float %}
+      {% from 'int_ops.jinja' import int32 %}
+      {% set c = int32(a,b) | float %}
+      {{ c if c > 0 else 0 }}
+    {% endif %}
+
+- name: Power to Home
+  device_class: power
+  unit_of_measurement: "W"
+  state_class: measurement
+  state: > 
+    {% if is_state('binary_sensor.evervolt_ok', 'on') %}
+      {{ state_attr('sensor.evervolt', 'Data')[30] }}
+    {% endif %}
+
+- name: Energy from Grid
+  device_class: energy
+  unit_of_measurement: "kWh"
+  state_class: total_increasing
+  state: > 
+    {% if is_state('binary_sensor.evervolt_ok', 'on') %}
+      {{ state_attr('sensor.evervolt', 'Data')[39] | float / 10 }}
+    {% endif %}
+
+- name: Evervolt Battery Voltage DC
+  device_class: voltage
+  unit_of_measurement: "V"
+  state_class: measurement
+  state: > 
+    {% if is_state('binary_sensor.evervolt_ok', 'on') %}
+      {{ state_attr('sensor.evervolt', 'Data')[89] | float / 100 }}
+    {% endif %}
+
+- name: Evervolt Battery Current DC
+  device_class: current
+  unit_of_measurement: "A"
+  state_class: measurement
+  state: > 
+    {% if is_state('binary_sensor.evervolt_ok', 'on') %}
+      {{ state_attr('sensor.evervolt', 'Data')[90] | float / 100 }}
+    {% endif %}
+
+- name: Evervolt Battery Power
+  device_class: power
+  unit_of_measurement: "W"
+  state_class: measurement
+  state: > 
+    {% if is_state('binary_sensor.evervolt_ok', 'on') %}
+      {% set a = state_attr('sensor.evervolt', 'Data')[91] | float %}
+      {% from 'int_ops.jinja' import int16 %}
+      {{ int16(a) | float }}
+    {% endif %}
+
+- name: Evervolt Battery Temperature
+  device_class: temperature
+  unit_of_measurement: "°C"
+  state_class: measurement
+  state: > 
+    {% if is_state('binary_sensor.evervolt_ok', 'on') %}
+      {{ state_attr('sensor.evervolt', 'Data')[92] }}
+    {% endif %}
+
+- name: Evervolt Battery SOC
+  device_class: battery
+  unit_of_measurement: "%"
+  state_class: measurement
+  state: > 
+    {% if is_state('binary_sensor.evervolt_ok', 'on') %}
+      {{ state_attr('sensor.evervolt', 'Data')[93] }}
+    {% endif %}
+
+- name: Evervolt Battery Current Stored Energy
+  device_class: energy
+  unit_of_measurement: "kWh"
+  state_class: measurement
+  state: > 
+    {% if is_state('binary_sensor.evervolt_ok', 'on') %}
+      {{ state_attr('sensor.evervolt', 'Data')[99] | float / 10 }}
+    {% endif %}
+
+- name: Evervolt Output Voltage
+  device_class: voltage
+  unit_of_measurement: "V"
+  state_class: measurement
+  state: > 
+    {% if is_state('binary_sensor.evervolt_ok', 'on') %}
+      {{ state_attr('sensor.evervolt', 'Data')[213] | float / 10 }}
+    {% endif %}
+
+- name: Evervolt Phase A Voltage
+  device_class: voltage
+  unit_of_measurement: "V"
+  state_class: measurement
+  state: > 
+    {% if is_state('binary_sensor.evervolt_ok', 'on') %}
+      {{ state_attr('sensor.evervolt', 'Data')[220] | float / 10 }}
+    {% endif %}
+
+- name: Evervolt Phase A Current
+  device_class: current
+  unit_of_measurement: "A"
+  state_class: measurement
+  state: > 
+    {% if is_state('binary_sensor.evervolt_ok', 'on') %}
+      {% set a = state_attr('sensor.evervolt', 'Data')[221] | float %}
+      {% set scale = 10 | float %}
+      {% from 'int_ops.jinja' import int16 %}
+      {{ int16(a) | float / 10 }}
+    {% endif %}
+
+- name: Evervolt Phase B Voltage
+  device_class: voltage
+  unit_of_measurement: "V"
+  state_class: measurement
+  state: > 
+    {% if is_state('binary_sensor.evervolt_ok', 'on') %}
+      {{ state_attr('sensor.evervolt', 'Data')[222] | float / 10 }}
+    {% endif %}
+
+- name: Evervolt Phase B Current
+  device_class: current
+  unit_of_measurement: "A"
+  state_class: measurement
+  state: > 
+    {% if is_state('binary_sensor.evervolt_ok', 'on') %}
+      {% set a = state_attr('sensor.evervolt', 'Data')[223] | float %}
+      {% set scale = 10 | float %}
+      {% from 'int_ops.jinja' import int16 %}
+      {{ int16(a) | float / scale }}
+    {% endif %}
+
+- name: Evervolt Inverter Frequency
+  device_class: frequency
+  unit_of_measurement: "Hz"
+  state_class: measurement
+  state: > 
+    {% if is_state('binary_sensor.evervolt_ok', 'on') %}
+      {{ state_attr('sensor.evervolt', 'Data')[224] | float / 100 }}
+    {% endif %}

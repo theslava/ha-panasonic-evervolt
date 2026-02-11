@@ -1,0 +1,6 @@
+- name: "Evervolt OK"
+  device_class: connectivity
+  variables:
+    sn: !secret evervolt_sn
+  state: >
+    {{ state_attr('sensor.evervolt', 'sn') == sn }}
