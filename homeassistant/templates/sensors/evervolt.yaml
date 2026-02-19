@@ -27,6 +27,8 @@
       {% set a = state_attr('sensor.evervolt', 'Data')[6] | float %}
       {% from 'int_ops.jinja' import int16 %}
       {{ int16(a) | float }}
+    {% else %}
+      0
     {% endif %}
 
 - name: Battery Charge Power
@@ -34,24 +36,16 @@
   unit_of_measurement: "W"
   state_class: measurement
   state: > 
-    {% if is_state('binary_sensor.evervolt_ok', 'on') %}
-      {% set a = state_attr('sensor.evervolt', 'Data')[6] | float %}
-      {% from 'int_ops.jinja' import int16 %}
-      {% set c = int16(a) | float %}
-      {{ c | abs if c < 0 else 0 }}
-    {% endif %}
+    {% set p = states('sensor.battery_net_power') | float(0) %}
+    {{ -p if p < 0 else 0 }}
 
 - name: Battery Discharge Power
   device_class: power
   unit_of_measurement: "W"
   state_class: measurement
   state: > 
-    {% if is_state('binary_sensor.evervolt_ok', 'on') %}
-      {% set a = state_attr('sensor.evervolt', 'Data')[6] | float %}
-      {% from 'int_ops.jinja' import int16 %}
-      {% set c = int16(a) | float %}
-      {{ c if c > 0 else 0 }}
-    {% endif %}
+    {% set p = states('sensor.battery_net_power') | float(0) %}
+    {{ p if p > 0 else 0 }}
 
 - name: Grid Frequency
   device_class: frequency
@@ -72,6 +66,8 @@
       {% set b = state_attr('sensor.evervolt', 'Data')[29] | float %}
       {% from 'int_ops.jinja' import int32 %}
       {{ int32(a,b) | float }}
+    {% else %}
+      0
     {% endif %}
 
 - name: Net Power Inverted
@@ -79,38 +75,24 @@
   unit_of_measurement: "W"
   state_class: measurement
   state: > 
-    {% if is_state('binary_sensor.evervolt_ok', 'on') %}
-      {% set a = state_attr('sensor.evervolt', 'Data')[28] | float %}
-      {% set b = state_attr('sensor.evervolt', 'Data')[29] | float %}
-      {% from 'int_ops.jinja' import int32 %}
-      {{ int32(a,b) | float * -1 }}
-    {% endif %}
+    {% set p = states('sensor.net_power') | float(0) %}
+    {{ -p }}
 
 - name: Net Power Import
   device_class: power
   unit_of_measurement: "W"
   state_class: measurement
   state: > 
-    {% if is_state('binary_sensor.evervolt_ok', 'on') %}
-      {% set a = state_attr('sensor.evervolt', 'Data')[28] | float %}
-      {% set b = state_attr('sensor.evervolt', 'Data')[29] | float %}
-      {% from 'int_ops.jinja' import int32 %}
-      {% set c = int32(a,b) | float %}
-      {{ c | abs if c < 0 else 0 }}
-    {% endif %}
+    {% set p = states('sensor.net_power') | float(0) %}
+    {{ -p if p < 0 else 0 }}
 
 - name: Net Power Export
   device_class: power
   unit_of_measurement: "W"
   state_class: measurement
   state: > 
-    {% if is_state('binary_sensor.evervolt_ok', 'on') %}
-      {% set a = state_attr('sensor.evervolt', 'Data')[28] | float %}
-      {% set b = state_attr('sensor.evervolt', 'Data')[29] | float %}
-      {% from 'int_ops.jinja' import int32 %}
-      {% set c = int32(a,b) | float %}
-      {{ c if c > 0 else 0 }}
-    {% endif %}
+    {% set p = states('sensor.net_power') | float(0) %}
+    {{ p if p > 0 else 0 }}
 
 - name: Power to Home
   device_class: power
@@ -118,7 +100,11 @@
   state_class: measurement
   state: > 
     {% if is_state('binary_sensor.evervolt_ok', 'on') %}
-      {{ state_attr('sensor.evervolt', 'Data')[30] }}
+      {% set a = state_attr('sensor.evervolt', 'Data')[30] | float(0) %}
+      {% from 'int_ops.jinja' import int16 %}
+      {{ int16(a) | float(0) }}
+    {% else %}
+      0
     {% endif %}
 
 - name: Energy from Grid
@@ -245,3 +231,4 @@
     {% if is_state('binary_sensor.evervolt_ok', 'on') %}
       {{ state_attr('sensor.evervolt', 'Data')[224] | float / 100 }}
     {% endif %}
+

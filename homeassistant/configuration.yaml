@@ -25,12 +25,27 @@ sensor:
     unique_id: battery_charge_energy
     method: trapezoidal
     round: 3
-
+    max_sub_interval: 5
   - platform: integration
     source: sensor.battery_discharge_power
     name: Battery Discharge Energy
     unit_prefix: k
     unique_id: battery_discharge_energy
+    method: trapezoidal
+    round: 3
+    max_sub_interval: 5
+  - platform: integration
+    source: sensor.net_power_export
+    name: Energy Export
+    unit_prefix: k
+    unique_id: energy_export
+    method: trapezoidal
+    round: 3
+  - platform: integration
+    source: sensor.net_power_import
+    name: Energy Import
+    unit_prefix: k
+    unique_id: energy_import
     method: trapezoidal
     round: 3
 
@@ -40,8 +55,15 @@ homeassistant:
       device_class: energy
       state_class: total_increasing
       unit_of_measurement: kWh
-
     sensor.battery_discharge_energy:
+      device_class: energy
+      state_class: total_increasing
+      unit_of_measurement: kWh
+    sensor.energy_export:
+      device_class: energy
+      state_class: total_increasing
+      unit_of_measurement: kWh
+    sensor.energy_import:
       device_class: energy
       state_class: total_increasing
       unit_of_measurement: kWh
